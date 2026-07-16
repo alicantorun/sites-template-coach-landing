@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Brand tokens (Tailwind v4 @theme) — teal accent for the coaching brand. The agent
+   changes these to re-skin the site; utilities like bg-brand / text-brand read from here. */
+@theme inline {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    --color-brand: #0d9488;
+    --color-brand-dark: #0f766e;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
