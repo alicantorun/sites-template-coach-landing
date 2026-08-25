@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { site } from "@/lib/content";
 
-// Lead form. The website builder wires this to the platform lead endpoint
-// (POST /api/v1/public/sites/[siteId]/leads with a per-site token) at publish; for now
-// it captures client-side so the template runs standalone. TODO(builder): swap the
-// onSubmit for a fetch to the provisioned endpoint.
+// Lead form, wired to the platform's enquiry endpoint via this site's own /api/lead route.
+//
+// It used to set `sent` on submit and post nowhere — a form that LOOKS like it worked and
+// delivers nothing, which is worse than no form at all. The success state is now shown only when
+// the request actually succeeded.
 export function Contact() {
-    const [sent, setSent] = useState(false);
+    const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+    const [error, setError] = useState("");
+    const sent = state === "sent";
     const inputCls =
         "w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 transition-colors focus:border-brand focus:outline-none";
     return (
@@ -41,9 +44,29 @@ export function Contact() {
                             </div>
                         ) : (
                             <form
-                                onSubmit={(e) => {
+                                onSubmit={async (e) => {
                                     e.preventDefault();
-                                    setSent(true);
+                                    if (state === "sending") return;
+                                    const form = new FormData(e.currentTarget);
+                                    setState("sending");
+                                    const res = await fetch("/api/lead", {
+                                        method: "POST",
+                                        headers: { "content-type": "application/json" },
+                                        body: JSON.stringify({
+                                            name: form.get("name"),
+                                            email: form.get("email"),
+                                            message: form.get("message"),
+                                            website: form.get("website"),
+                                            source: "contact",
+                                        }),
+                                    }).catch(() => null);
+                                    if (res?.ok) return setState("sent");
+                                    const body = await res?.json().catch(() => ({}));
+                                    setError(
+                                        body?.message ??
+                                            "Something went wrong. Please try again.",
+                                    );
+                                    setState("error");
                                 }}
                                 className="space-y-4"
                             >
@@ -66,12 +89,30 @@ export function Contact() {
                                     placeholder="What are your goals?"
                                     className={inputCls}
                                 />
+                                {/* Honeypot: off-screen rather than type="hidden", because bots
+                                    read the DOM. Hidden from assistive tech and out of tab order,
+                                    so a person never meets it. */}
+                                <input
+                                    name="website"
+                                    tabIndex={-1}
+                                    autoComplete="off"
+                                    aria-hidden="true"
+                                    className="absolute left-[-9999px]"
+                                />
                                 <button
                                     type="submit"
-                                    className="w-full rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+                                    disabled={state === "sending"}
+                                    className="w-full rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
                                 >
-                                    Request my free call
+                                    {state === "sending"
+                                        ? "Sending…"
+                                        : "Request my free call"}
                                 </button>
+                                {state === "error" && (
+                                    <p role="alert" className="text-sm text-red-400">
+                                        {error}
+                                    </p>
+                                )}
                             </form>
                         )}
                     </div>
