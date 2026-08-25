@@ -1,19 +1,15 @@
-"use client";
-
-import { useState } from "react";
 import { site } from "@/lib/content";
 
-// Lead form, wired to the platform's enquiry endpoint via this site's own /api/lead route.
+// Contact details, not a form.
 //
-// It used to set `sent` on submit and post nowhere — a form that LOOKS like it worked and
-// delivers nothing, which is worse than no form at all. The success state is now shown only when
-// the request actually succeeded.
+// The platform's enquiry endpoint was removed on 2026-08-25: a site's data now lives in the site's
+// OWN database, so a form belongs here only once this site has one. Until then the phone number and
+// the email address are the paths that actually work, and a submit button that goes nowhere is
+// worse than no form at all.
+//
+// To add a real form: give this site a database in the portal, create a table with an insert policy
+// for anonymous visitors, and post to it with the Supabase client in lib/supabase/.
 export function Contact() {
-    const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
-    const [error, setError] = useState("");
-    const sent = state === "sent";
-    const inputCls =
-        "w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 transition-colors focus:border-brand focus:outline-none";
     return (
         <section id="contact" className="bg-neutral-950 text-white">
             <div className="mx-auto max-w-6xl px-6 py-24">
@@ -32,89 +28,26 @@ export function Contact() {
                         </div>
                     </div>
                     <div>
-                        {sent ? (
-                            <div className="rounded-2xl bg-white/5 p-10 text-center">
-                                <p className="text-lg font-semibold">
-                                    Thanks! 🎉
-                                </p>
-                                <p className="mt-2 text-neutral-300">
-                                    I&apos;ll be in touch within a day to set up
-                                    your free call.
-                                </p>
-                            </div>
-                        ) : (
-                            <form
-                                onSubmit={async (e) => {
-                                    e.preventDefault();
-                                    if (state === "sending") return;
-                                    const form = new FormData(e.currentTarget);
-                                    setState("sending");
-                                    const res = await fetch("/api/lead", {
-                                        method: "POST",
-                                        headers: { "content-type": "application/json" },
-                                        body: JSON.stringify({
-                                            name: form.get("name"),
-                                            email: form.get("email"),
-                                            message: form.get("message"),
-                                            website: form.get("website"),
-                                            source: "contact",
-                                        }),
-                                    }).catch(() => null);
-                                    if (res?.ok) return setState("sent");
-                                    const body = await res?.json().catch(() => ({}));
-                                    setError(
-                                        body?.message ??
-                                            "Something went wrong. Please try again.",
-                                    );
-                                    setState("error");
-                                }}
-                                className="space-y-4"
-                            >
-                                <input
-                                    required
-                                    name="name"
-                                    placeholder="Your name"
-                                    className={inputCls}
-                                />
-                                <input
-                                    required
-                                    type="email"
-                                    name="email"
-                                    placeholder="Email"
-                                    className={inputCls}
-                                />
-                                <textarea
-                                    name="message"
-                                    rows={4}
-                                    placeholder="What are your goals?"
-                                    className={inputCls}
-                                />
-                                {/* Honeypot: off-screen rather than type="hidden", because bots
-                                    read the DOM. Hidden from assistive tech and out of tab order,
-                                    so a person never meets it. */}
-                                <input
-                                    name="website"
-                                    tabIndex={-1}
-                                    autoComplete="off"
-                                    aria-hidden="true"
-                                    className="absolute left-[-9999px]"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={state === "sending"}
-                                    className="w-full rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
+                        <div className="rounded-2xl bg-white/5 p-10">
+                            <p className="text-lg font-semibold">Get in touch</p>
+                            <p className="mt-2 text-neutral-300">
+                                Call or email and I&apos;ll come back to you the same day.
+                            </p>
+                            <div className="mt-6 space-y-2">
+                                <a
+                                    href={`tel:${site.business.phone}`}
+                                    className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
                                 >
-                                    {state === "sending"
-                                        ? "Sending…"
-                                        : "Request my free call"}
-                                </button>
-                                {state === "error" && (
-                                    <p role="alert" className="text-sm text-red-400">
-                                        {error}
-                                    </p>
-                                )}
-                            </form>
-                        )}
+                                    {site.business.phone}
+                                </a>
+                                <a
+                                    href={`mailto:${site.business.email}`}
+                                    className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+                                >
+                                    {site.business.email}
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
