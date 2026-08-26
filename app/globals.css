@@ -1,12 +1,21 @@
 @import "tailwindcss";
 
-/* Brand tokens (Tailwind v4 @theme) — teal accent for the coaching brand. The agent
-   changes these to re-skin the site; utilities like bg-brand / text-brand read from here. */
+/* Brand tokens (Tailwind v4 @theme) — a teal accent for the coaching brand, deliberately
+   different from the trades amber and the editorial near-black.
+
+   Editing these three values re-skins the whole site, and that is a CONTRACT, not a hope: no
+   component may reach for one of Tailwind's fixed palette classes for a brand colour, because
+   such a class ignores the tokens and leaves a re-skinned site half its old colour. That is
+   exactly what the hero wash and the about portrait used to do. Every brand-derived colour goes
+   through the brand utilities these tokens generate. */
 @theme inline {
     --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
         Helvetica, Arial, sans-serif;
     --color-brand: #0d9488;
     --color-brand-dark: #0f766e;
+    /* The lightest shade — page washes and large tinted blocks, where --color-brand is too strong
+       to sit behind text. */
+    --color-brand-tint: #f0fdfa;
 }
 
 html {

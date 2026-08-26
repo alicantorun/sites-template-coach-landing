@@ -1,14 +1,11 @@
 import { site } from "@/lib/content";
+import { ContactForm } from "@/components/contact-form";
 
-// Contact details, not a form.
+// The form and the direct details, side by side on purpose. A form that posts somewhere real is
+// the low-friction path; the phone number and the email address are the ones that still work when
+// the form does not, so neither replaces the other.
 //
-// The platform's enquiry endpoint was removed on 2026-08-25: a site's data now lives in the site's
-// OWN database, so a form belongs here only once this site has one. Until then the phone number and
-// the email address are the paths that actually work, and a submit button that goes nowhere is
-// worse than no form at all.
-//
-// To add a real form: give this site a database in the portal, create a table with an insert policy
-// for anonymous visitors, and post to it with the Supabase client in lib/supabase/.
+// Where a submission GOES is lib/services/contact.ts — it logs by default, and says so.
 export function Contact() {
     return (
         <section id="contact" className="bg-neutral-950 text-white">
@@ -18,37 +15,32 @@ export function Contact() {
                         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                             {site.contact.title}
                         </h2>
-                        <p className="mt-4 max-w-md text-neutral-300">
-                            {site.contact.subtitle}
-                        </p>
-                        <div className="mt-8 space-y-2 text-sm text-neutral-400">
-                            <p>{site.business.email}</p>
-                            <p>{site.business.phone}</p>
-                            <p>{site.business.location}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <div className="rounded-2xl bg-white/5 p-10">
-                            <p className="text-lg font-semibold">Get in touch</p>
-                            <p className="mt-2 text-neutral-300">
-                                Call or email and I&apos;ll come back to you the same day.
-                            </p>
-                            <div className="mt-6 space-y-2">
+                        <p className="mt-4 max-w-md text-neutral-300">{site.contact.subtitle}</p>
+                        <div className="mt-8 space-y-2">
+                            <a
+                                href={`mailto:${site.business.email}`}
+                                className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+                            >
+                                {site.business.email}
+                            </a>
+                            {site.business.phone && (
                                 <a
-                                    href={`tel:${site.business.phone}`}
+                                    // `phoneHref`, never `phone`: the display number carries spaces
+                                    // and a tel: URL built from it is not dialable.
+                                    href={`tel:${site.business.phoneHref}`}
                                     className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
                                 >
                                     {site.business.phone}
                                 </a>
-                                <a
-                                    href={`mailto:${site.business.email}`}
-                                    className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
-                                >
-                                    {site.business.email}
-                                </a>
-                            </div>
+                            )}
                         </div>
+                        {site.business.location && (
+                            <p className="mt-4 text-sm text-neutral-400">
+                                {site.business.location}
+                            </p>
+                        )}
                     </div>
+                    <ContactForm />
                 </div>
             </div>
         </section>

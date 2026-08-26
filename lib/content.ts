@@ -1,15 +1,29 @@
-// The content contract: every business fact in ONE typed module (website-builder
-// template contract, docs/WEBSITE-BUILDER-ARCHITECTURE.md §12). "Change my phone number"
-// is a one-line edit here, and the whole site + SEO metadata read from it. The agent
-// edits this for content changes and the components for structure/design.
-export const site = {
+import type { Site } from "@/lib/site-schema";
+
+// The content contract: every business fact in ONE typed module. "Change my phone number" is a
+// one-line edit here, and the whole site plus its SEO metadata read from it. The agent edits this
+// file for content changes and the components for structure and design.
+//
+// The SHAPE is not defined here — it is `Site` in lib/site-schema.ts, shared by every template, so
+// one instruction ("edit lib/content.ts, field business.phone") is correct for all of them. Only
+// the VALUES below are this site's. Sections a template does not use are simply absent; adding a
+// field means adding it to the schema first, which is the point.
+//
+// Annotated `: Site` rather than `as const satisfies Site`: `as const` makes every array readonly,
+// and a readonly array is not assignable to the schema's mutable arrays, so that pairing does not
+// compile. The annotation is what makes tsc check this file against the contract.
+export const site: Site = {
     business: {
         name: "Nimbus Coaching",
         tagline: "Train with intention.",
         email: "hello@nimbuscoaching.example",
         phone: "+49 30 1234 5678",
+        // The DIALABLE form, and the reason the field exists. A tel: href built from the display
+        // number carries its spaces into the URL, which a phone cannot dial — so the two forms are
+        // stored separately rather than derived from each other at a call site.
+        phoneHref: "+493012345678",
         location: "Berlin, Germany",
-        instagram: "https://instagram.com/",
+        socials: [{ label: "Instagram", href: "https://instagram.com/" }],
     },
     nav: [
         { label: "Services", href: "#services" },
@@ -65,6 +79,8 @@ export const site = {
         subtitle:
             "Tell me a little about your goals and I'll get back to you within a day to set up a free 20-minute call.",
     },
-} as const;
+};
 
-export type Site = typeof site;
+// Re-exported so a component can type against the contract without knowing which file defines it.
+// One import path for the data and its shape; the definition still lives in exactly one place.
+export type { Site };
