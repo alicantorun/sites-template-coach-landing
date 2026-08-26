@@ -1,11 +1,19 @@
 import { site } from "@/lib/content";
 import { ContactForm } from "@/components/contact-form";
+import { contactDeliveryConfigured } from "@/lib/services/contact";
 
 // The form and the direct details, side by side on purpose. A form that posts somewhere real is
 // the low-friction path; the phone number and the email address are the ones that still work when
 // the form does not, so neither replaces the other.
 //
-// Where a submission GOES is lib/services/contact.ts — it logs by default, and says so.
+// The form renders ONLY when a submission has somewhere real to go. This site's own database is
+// that somewhere, and the platform injects its credentials when the site has one. Until
+// 2026-08-26 the form rendered unconditionally over a delivery function that logged and returned,
+// so a visitor was thanked for an enquiry nobody would ever read.
+//
+// A site with no database is not broken — it simply leads with the phone number and the email
+// address, which work. To turn the form on: add a database in the portal, then ask the agent for
+// an enquiries table. Where a submission goes is lib/services/contact.ts.
 export function Contact() {
     return (
         <section id="contact" className="bg-neutral-950 text-white">
@@ -40,7 +48,7 @@ export function Contact() {
                             </p>
                         )}
                     </div>
-                    <ContactForm />
+                    {contactDeliveryConfigured() && <ContactForm />}
                 </div>
             </div>
         </section>

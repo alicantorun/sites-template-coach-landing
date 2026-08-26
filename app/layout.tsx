@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { site } from "@/lib/content";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, buildJsonLd } from "@/lib/seo";
 
 // Metadata is BUILT, not hand-written: buildMetadata carries the canonical URL and the complete
 // openGraph block, which Next replaces wholesale rather than deep-merging. A page that writes its
@@ -20,6 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className="bg-white text-neutral-900 antialiased">
                 <Providers>{children}</Providers>
+                {/* Structured data for search and answer engines. Rendered from the same content
+                    contract the page uses, so it cannot describe a business the page does not. */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd("ProfessionalService")) }}
+                />
             </body>
         </html>
     );
