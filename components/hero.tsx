@@ -1,7 +1,6 @@
 import { site } from "@/lib/content";
 import { Container } from "@/lib/ui/container";
 import { Button } from "@/lib/ui/button";
-import { Reveal } from "@/lib/ui/reveal";
 import { Aura, PhotoSlot } from "@/components/visual";
 
 // WARM EDITORIAL. Asymmetric on purpose: the words take a reading column on the left and a
@@ -18,22 +17,21 @@ export function Hero() {
             <Container className="relative py-24 md:py-36">
                 <div className="grid gap-14 md:grid-cols-[1.15fr_1fr] md:items-center">
                     <div>
-                    <Reveal travel="sm" duration="fast">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-fg-subtle">
+                    <div className="enter"><p className="font-mono text-[11px] uppercase tracking-[0.22em] text-fg-subtle">
                             {site.hero.eyebrow}
                         </p>
-                    </Reveal>
-                    <Reveal delay={0.08}>
+                    </div>
+                    <div className="enter enter-1">
                         <h1 className="mt-6 font-display text-[clamp(2.3rem,5vw,3.9rem)] leading-[1.06] font-normal tracking-[-0.012em] text-balance text-fg">
                             {site.hero.title}
                         </h1>
-                    </Reveal>
-                    <Reveal delay={0.16}>
+                    </div>
+                    <div className="enter enter-2">
                         <p className="mt-7 max-w-2xl text-lg leading-relaxed text-fg-muted">
                             {site.hero.subtitle}
                         </p>
-                    </Reveal>
-                    <Reveal delay={0.24} travel="sm">
+                    </div>
+                    <div className="enter enter-3">
                         <div className="mt-10 flex flex-wrap items-center gap-3">
                             <Button href={site.hero.primaryCta.href} size="lg">
                                 {site.hero.primaryCta.label}
@@ -44,14 +42,14 @@ export function Hero() {
                                 </Button>
                             ) : null}
                         </div>
-                    </Reveal>
                     </div>
-                    <Reveal delay={0.2} travel="lg">
+                    </div>
+                    <div className="enter enter-4">
                         <PhotoSlot label="A portrait of the coach" ratio="4 / 5" />
-                    </Reveal>
+                    </div>
                 </div>
                 {site.hero.stats?.length ? (
-                    <Reveal delay={0.32} travel="sm">
+                    <div className="enter enter-4">
                         <dl className="mt-16 flex flex-wrap gap-x-14 gap-y-6 border-t border-line pt-8">
                             {site.hero.stats.map((s) => (
                                 <div key={s.label}>
@@ -64,7 +62,7 @@ export function Hero() {
                                 </div>
                             ))}
                         </dl>
-                    </Reveal>
+                    </div>
                 ) : null}
             </Container>
         </section>
