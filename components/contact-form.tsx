@@ -38,9 +38,9 @@ export function ContactForm() {
 
     if (contact.isSuccess) {
         return (
-            <div role="status" className="rounded-2xl bg-white/5 p-10">
+            <div role="status" className="rounded-2xl bg-surface-2 p-10">
                 <p className="text-lg font-semibold">Thanks — that&apos;s with me.</p>
-                <p className="mt-2 text-neutral-300">
+                <p className="mt-2 text-fg-subtle">
                     I&apos;ll come back to you within a day to set up your free 20-minute call. If
                     it&apos;s urgent, call instead and you&apos;ll get me the same day.
                 </p>
@@ -49,9 +49,9 @@ export function ContactForm() {
     }
 
     return (
-        <form onSubmit={onSubmit} className="relative rounded-2xl bg-white/5 p-10">
+        <form onSubmit={onSubmit} className="relative rounded-2xl bg-surface-2 p-10">
             <p className="text-lg font-semibold">Get in touch</p>
-            <p className="mt-2 text-sm text-neutral-300">
+            <p className="mt-2 text-sm text-fg-subtle">
                 Tell me where you&apos;re starting from and what you want to change.
             </p>
 
@@ -60,7 +60,7 @@ export function ContactForm() {
                 <Field label="Email" name="email" type="email" autoComplete="email" required />
                 <Field label="Phone (optional)" name="phone" type="tel" autoComplete="tel" />
                 <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-neutral-200">
+                    <label htmlFor="message" className="block text-sm font-medium text-fg-subtle">
                         What are you working towards?
                     </label>
                     <textarea
@@ -68,7 +68,7 @@ export function ContactForm() {
                         name="message"
                         rows={4}
                         required
-                        className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-white/40 focus:outline-none"
+                        className="mt-1 w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg placeholder:text-fg-muted focus:border-brand focus:outline-none"
                         placeholder="I'd like to get back into training twice a week…"
                     />
                 </div>
@@ -86,7 +86,7 @@ export function ContactForm() {
             {contact.isError && (
                 <p
                     role="alert"
-                    className="mt-6 rounded-lg border border-red-400/40 bg-red-400/10 px-3 py-2 text-sm text-red-200"
+                    className="mt-6 rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg"
                 >
                     {contact.error.message}
                 </p>
@@ -95,7 +95,7 @@ export function ContactForm() {
             <button
                 type="submit"
                 disabled={contact.isPending}
-                className="mt-6 w-full rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 w-full rounded-full bg-brand px-6 py-3 text-sm font-semibold text-on-brand transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
             >
                 {contact.isPending ? "Sending…" : "Send"}
             </button>
@@ -120,7 +120,7 @@ function Field({
 }) {
     return (
         <div>
-            <label htmlFor={name} className="block text-sm font-medium text-neutral-200">
+            <label htmlFor={name} className="block text-sm font-medium text-fg-subtle">
                 {label}
             </label>
             <input
@@ -129,7 +129,7 @@ function Field({
                 type={type}
                 autoComplete={autoComplete}
                 required={required}
-                className="mt-1 w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-white/40 focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg placeholder:text-fg-muted focus:border-brand focus:outline-none"
             />
         </div>
     );

@@ -44,7 +44,7 @@
     --color-surface-2: #f7f6f3;
     --color-fg: #16181c;
     --color-fg-muted: #4a5058;
-    --color-fg-subtle: #858d96;
+    --color-fg-subtle: #6f767f;
     --color-line: #e5e3de;
 
     /* SHAPE. One step for controls, one for cards. Two, not five: a template with five radii has
@@ -82,7 +82,7 @@
         --color-surface-2: #16191c;
         --color-fg: #ecedee;
         --color-fg-muted: #b3b8bd;
-        --color-fg-subtle: #7d848b;
+        --color-fg-subtle: #8b939b;
         --color-line: #262a2e;
     }
 }
@@ -95,7 +95,7 @@
     --color-surface-2: #16191c;
     --color-fg: #ecedee;
     --color-fg-muted: #b3b8bd;
-    --color-fg-subtle: #7d848b;
+    --color-fg-subtle: #8b939b;
     --color-line: #262a2e;
 }
 
