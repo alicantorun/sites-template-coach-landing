@@ -1,52 +1,72 @@
 import { site } from "@/lib/content";
+import { Container } from "@/lib/ui/container";
+import { Button } from "@/lib/ui/button";
+import { Reveal } from "@/lib/ui/reveal";
+import { Aura, PhotoSlot } from "@/components/visual";
 
+// WARM EDITORIAL. Asymmetric on purpose: the words take a reading column on the left and a
+// portrait sits beside them, rather than a centred block with everything stacked under it. A
+// coach is selling a person, so a person belongs in the first screen.
+//
+// Note the reveal delays: the eyebrow, headline and subtitle arrive in reading order about a tenth
+// of a second apart. Long enough to read as deliberate, short enough that a returning visitor is
+// not made to wait for their own site.
 export function Hero() {
-    const h = site.hero;
     return (
-        <section className="relative overflow-hidden">
-            {/* Token-derived, not a palette class. A fixed teal gradient stop here was the
-                reason globals.css's "edit the tokens to re-skin the site" claim was false: the
-                wash stayed teal whatever --color-brand became. */}
-            <div className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-tint to-white" />
-            <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
-                <p className="text-sm font-semibold uppercase tracking-widest text-brand">
-                    {h.eyebrow}
-                </p>
-                <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-neutral-900 sm:text-6xl">
-                    {h.title}
-                </h1>
-                <p className="mt-6 max-w-xl text-lg leading-relaxed text-neutral-600">
-                    {h.subtitle}
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                    <a
-                        href={h.primaryCta.href}
-                        className="rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-dark"
-                    >
-                        {h.primaryCta.label}
-                    </a>
-                    {/* Optional in the contract, so absent renders as ABSENT — never as a button
-                        with no label pointing at "undefined". */}
-                    {h.secondaryCta && (
-                        <a
-                            href={h.secondaryCta.href}
-                            className="rounded-full border border-neutral-300 px-6 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:border-neutral-900"
-                        >
-                            {h.secondaryCta.label}
-                        </a>
-                    )}
+        <section className="relative isolate overflow-hidden border-b border-line">
+            <Aura seed={3} />
+            <Container className="relative py-24 md:py-36">
+                <div className="grid gap-14 md:grid-cols-[1.15fr_1fr] md:items-center">
+                    <div>
+                    <Reveal travel="sm" duration="fast">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-fg-subtle">
+                            {site.hero.eyebrow}
+                        </p>
+                    </Reveal>
+                    <Reveal delay={0.08}>
+                        <h1 className="mt-6 font-display text-[clamp(2.3rem,5vw,3.9rem)] leading-[1.06] font-normal tracking-[-0.012em] text-balance text-fg">
+                            {site.hero.title}
+                        </h1>
+                    </Reveal>
+                    <Reveal delay={0.16}>
+                        <p className="mt-7 max-w-2xl text-lg leading-relaxed text-fg-muted">
+                            {site.hero.subtitle}
+                        </p>
+                    </Reveal>
+                    <Reveal delay={0.24} travel="sm">
+                        <div className="mt-10 flex flex-wrap items-center gap-3">
+                            <Button href={site.hero.primaryCta.href} size="lg">
+                                {site.hero.primaryCta.label}
+                            </Button>
+                            {site.hero.secondaryCta ? (
+                                <Button href={site.hero.secondaryCta.href} variant="secondary" size="lg">
+                                    {site.hero.secondaryCta.label}
+                                </Button>
+                            ) : null}
+                        </div>
+                    </Reveal>
+                    </div>
+                    <Reveal delay={0.2} travel="lg">
+                        <PhotoSlot label="A portrait of the coach" ratio="4 / 5" />
+                    </Reveal>
                 </div>
-                {h.stats && h.stats.length > 0 && (
-                    <dl className="mt-16 flex flex-wrap gap-x-12 gap-y-6">
-                        {h.stats.map((s) => (
-                            <div key={s.label}>
-                                <dt className="text-3xl font-bold text-neutral-900">{s.value}</dt>
-                                <dd className="text-sm text-neutral-500">{s.label}</dd>
-                            </div>
-                        ))}
-                    </dl>
-                )}
-            </div>
+                {site.hero.stats?.length ? (
+                    <Reveal delay={0.32} travel="sm">
+                        <dl className="mt-16 flex flex-wrap gap-x-14 gap-y-6 border-t border-line pt-8">
+                            {site.hero.stats.map((s) => (
+                                <div key={s.label}>
+                                    <dt className="font-display text-2xl font-semibold tabular-nums tracking-[-0.02em] text-fg">
+                                        {s.value}
+                                    </dt>
+                                    <dd className="mt-0.5 text-xs uppercase tracking-[0.14em] text-fg-subtle">
+                                        {s.label}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </Reveal>
+                ) : null}
+            </Container>
         </section>
     );
 }

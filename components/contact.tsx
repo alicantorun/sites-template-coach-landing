@@ -1,56 +1,55 @@
 import { site } from "@/lib/content";
+import { Container, Section } from "@/lib/ui/container";
+import { Reveal } from "@/lib/ui/reveal";
+import { SectionHeading } from "@/components/section-heading";
 import { ContactForm } from "@/components/contact-form";
 import { contactDeliveryConfigured } from "@/lib/services/contact";
 
-// The form and the direct details, side by side on purpose. A form that posts somewhere real is
-// the low-friction path; the phone number and the email address are the ones that still work when
-// the form does not, so neither replaces the other.
-//
-// The form renders ONLY when a submission has somewhere real to go. This site's own database is
-// that somewhere, and the platform injects its credentials when the site has one. Until
-// 2026-08-26 the form rendered unconditionally over a delivery function that logged and returned,
-// so a visitor was thanked for an enquiry nobody would ever read.
-//
-// A site with no database is not broken — it simply leads with the phone number and the email
-// address, which work. To turn the form on: add a database in the portal, then ask the agent for
-// an enquiries table. Where a submission goes is lib/services/contact.ts.
+// The contact section. The mailto and the phone number come FIRST and work with no JavaScript;
+// the form is the second way to make contact, never the only one.
 export function Contact() {
     return (
-        <section id="contact" className="bg-neutral-950 text-white">
-            <div className="mx-auto max-w-6xl px-6 py-24">
-                <div className="grid gap-12 lg:grid-cols-2">
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                            {site.contact.title}
-                        </h2>
-                        <p className="mt-4 max-w-md text-neutral-300">{site.contact.subtitle}</p>
-                        <div className="mt-8 space-y-2">
-                            <a
-                                href={`mailto:${site.business.email}`}
-                                className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
-                            >
-                                {site.business.email}
-                            </a>
-                            {site.business.phone && (
+        <Section id="contact" className="border-t border-line">
+            <Container>
+                <div className="grid gap-14 md:grid-cols-2">
+                    <Reveal>
+                        <div>
+                            <SectionHeading
+                                title={site.contact.title}
+                                subtitle={site.contact.subtitle}
+                            />
+                            <div className="mt-8 space-y-2">
                                 <a
-                                    // `phoneHref`, never `phone`: the display number carries spaces
-                                    // and a tel: URL built from it is not dialable.
-                                    href={`tel:${site.business.phoneHref}`}
-                                    className="block text-lg font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+                                    href={`mailto:${site.business.email}`}
+                                    className="block text-lg text-fg underline decoration-line underline-offset-4 transition-colors hover:decoration-brand"
                                 >
-                                    {site.business.phone}
+                                    {site.business.email}
                                 </a>
-                            )}
+                                {site.business.phone ? (
+                                    <a
+                                        href={`tel:${site.business.phoneHref ?? site.business.phone}`}
+                                        className="block text-lg text-fg underline decoration-line underline-offset-4 transition-colors hover:decoration-brand"
+                                    >
+                                        {site.business.phone}
+                                    </a>
+                                ) : null}
+                                {site.business.location ? (
+                                    <p className="pt-2 text-sm text-fg-subtle">{site.business.location}</p>
+                                ) : null}
+                            </div>
                         </div>
-                        {site.business.location && (
-                            <p className="mt-4 text-sm text-neutral-400">
-                                {site.business.location}
-                            </p>
-                        )}
-                    </div>
-                    {contactDeliveryConfigured() && <ContactForm />}
+                    </Reveal>
+                    {/* The form renders only when delivery is actually configured. A form that
+                        silently drops a visitor's message is worse than no form. */}
+                    {contactDeliveryConfigured() ? (
+                        <Reveal delay={0.1}>
+                            <div className="rounded-[var(--radius-card)] border border-line bg-surface-2 p-8">
+                                <ContactForm />
+                            </div>
+                        </Reveal>
+                    ) : null}
                 </div>
-            </div>
-        </section>
+            </Container>
+        </Section>
     );
 }

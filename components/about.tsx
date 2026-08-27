@@ -1,32 +1,44 @@
 import { site } from "@/lib/content";
+import { Container, Section } from "@/lib/ui/container";
+import { Reveal, Stagger, StaggerItem } from "@/lib/ui/reveal";
+import { SectionHeading } from "@/components/section-heading";
+import { PhotoSlot } from "@/components/visual";
+
+// The about section: a portrait slot beside the studio's own words.
+//
+// ONE SECTION PER FILE. All five of these lived in a single `section-blocks.tsx`, which meant
+// "change the pricing tiers" made the agent read the services, about, testimonials and FAQ markup
+// too — the exact cost the one-file rule exists to prevent, and a rule that was agreed before this
+// was written. Splitting them was the first fix out of that audit.
 
 export function About() {
     const a = site.about;
     if (!a) return null;
     return (
-        <section id="about" className="bg-neutral-50">
-            <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-2 lg:items-center">
-                {/* The portrait placeholder, tinted from the brand tokens rather than from a
-                    fixed palette ramp — this block is the largest colour on the page, so
-                    hardcoding it was what made re-skinning look broken. */}
-                <div className="aspect-[4/5] w-full max-w-md rounded-3xl bg-gradient-to-br from-brand-tint to-brand" />
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
-                        {a.title}
-                    </h2>
-                    <p className="mt-6 text-lg leading-relaxed text-neutral-600">{a.body}</p>
-                    {a.points && a.points.length > 0 && (
-                        <ul className="mt-8 space-y-3">
-                            {a.points.map((p) => (
-                                <li key={p} className="flex items-start gap-3 text-neutral-700">
-                                    <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />
-                                    {p}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+        <Section id="about" className="border-y border-line bg-surface-2">
+            <Container>
+                <div className="grid gap-14 md:grid-cols-2 md:items-center">
+                    <Reveal travel="lg">
+                        <PhotoSlot label="A portrait, or the studio" ratio="4 / 5" />
+                    </Reveal>
+                    <div>
+                        <SectionHeading title={a.title} />
+                        <Reveal delay={0.1}>
+                            <p className="mt-6 text-lg leading-relaxed text-fg-muted">{a.body}</p>
+                        </Reveal>
+                        {a.points?.length ? (
+                            <Stagger className="mt-8 space-y-3">
+                                {a.points.map((p) => (
+                                    <StaggerItem key={p} travel="sm" className="flex gap-3">
+                                        <span aria-hidden className="mt-2 h-px w-5 shrink-0 bg-brand" />
+                                        <span className="leading-relaxed text-fg-muted">{p}</span>
+                                    </StaggerItem>
+                                ))}
+                            </Stagger>
+                        ) : null}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </Container>
+        </Section>
     );
 }
